@@ -20,3 +20,16 @@ story file.
 - The story file is updated: tasks checked off, file list accurate, status and
   completion notes current.
 - The change is scoped to the story — no unrelated changes smuggled in.
+
+### Epic 3+ Additional Requirements
+
+> These items are **required from Epic 3 onwards**. They are checked in addition
+> to all items above.
+
+- **(critical — Epic 3+)** All three test categories are present and labelled in
+  unit tests, integration tests, and Playwright: normal cases, edge cases, and
+  abnormal/failure cases.
+- **(critical — Epic 3+)** Every AC in the story is fully implemented this pass —
+  no ACs are deferred. The story file confirms all ACs are done.
+- **(critical — Epic 3+)** Dev output is presented as a self-contained
+  **DEV section** (per CLAUDE.md §6.3) — clearly separated from the QA section.

@@ -100,3 +100,68 @@ To run the entire app-development flow end to end, use the **`bmad-orchestrator`
 skill. It chains the BMAD pipeline (analysis → PRD → architecture → epics &
 stories → readiness → sprint plan → per-story dev/QA loop → review) and halts
 only at each persona's validated output for your review.
+
+---
+
+## 6. Epic 3+ Pipeline Rules
+
+The following rules apply to all Dev and QA work from **Epic 3 onwards**.
+They extend — not replace — Sections 1–5.
+
+### 6.1 Full Test Coverage (Normal + Edge + Abnormal)
+
+Every story implementation and its test suite must cover **all three case categories**:
+
+- **Normal cases** — intended happy-path behavior under valid, expected input.
+- **Edge cases** — boundary values, empty inputs, min/max, concurrent requests,
+  timing-sensitive paths.
+- **Abnormal cases** — invalid input, malformed data, network/dependency failure,
+  authorization violations, unexpected state, race conditions.
+
+This applies to unit tests, integration tests, and Playwright E2E tests alike.
+A test suite covering only normal cases fails the QA gate.
+
+Every story's **full set of acceptance criteria must be implemented and tested**
+in a single pass. No ACs are deferred.
+
+### 6.2 QA Persona — Real-Life QA + AQA Workflow
+
+QA work in Epic 3+ must reflect how a real **QA engineer and AQA (Automation QA)**
+operate when handling a ticket:
+
+1. **Test Planning** — before writing any test, produce a brief test plan:
+   scope, test types (unit / integration / E2E), tools, risk areas, and
+   entry/exit criteria.
+2. **Manual → Auto traceability** — every manual test case (TC) must have a
+   corresponding automated test, or a documented rationale for why it stays manual.
+3. **Defect logging** — each finding is logged with: title, severity, steps to
+   reproduce, expected vs. actual result, environment, and a suggested fix.
+4. **Regression sweep** — explicitly verify whether the story's changes could
+   break existing flows; document the scope and outcome.
+5. **QA gate sign-off** — the gate decision states: pass / pass with conditions /
+   fail, lists all open defects, and records the tester's confidence %.
+
+### 6.3 Dev/QA Section Separation and Cycle Visibility
+
+When presenting a Dev↔QA loop to the user, the output **must** be structured as
+two visually distinct, self-contained sections followed by a cycle summary:
+
+```
+════════════════════════════════════════
+ 🔨 DEV — Cycle N
+════════════════════════════════════════
+[What was implemented / fixed this cycle]
+
+════════════════════════════════════════
+ 🔍 QA — Cycle N
+════════════════════════════════════════
+[Test plan, findings, defect list, gate decision]
+
+────────────────────────────────────────
+ 🔄 CYCLE N RESULT: PASS | FAIL → routing back to Dev
+────────────────────────────────────────
+```
+
+- Each section is **self-contained** — the reader does not need to cross-reference the other section to understand it.
+- If QA fails, the next Dev cycle starts a new numbered block; the total cycle count is always visible.
+- The cycle loop is the **key deliverable of the process** — highlight it, do not bury it.
