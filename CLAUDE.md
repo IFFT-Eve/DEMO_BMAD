@@ -165,3 +165,48 @@ two visually distinct, self-contained sections followed by a cycle summary:
 - Each section is **self-contained** — the reader does not need to cross-reference the other section to understand it.
 - If QA fails, the next Dev cycle starts a new numbered block; the total cycle count is always visible.
 - The cycle loop is the **key deliverable of the process** — highlight it, do not bury it.
+
+### 6.4 Git Workflow (Mandatory for Every Story)
+
+The Dev persona executes this workflow in sequence for every story — no exceptions.
+
+> **GATE**: After the QA gate passes and before any git operations, the Dev persona
+> **must present the implementation summary to the user and wait for explicit approval**.
+> Only proceed with Steps 1–3 after the user confirms with "approved", "lgtm", "go",
+> or equivalent. Never auto-trigger the git flow without that confirmation.
+
+**Step 1 — Create branch** (before any code changes):
+
+- Format: `feature/EPIC-N/short-slug`
+- Derive `N` from the epic number in the story file; derive the slug from the story title (2–4 words, kebab-case).
+- Example: `feature/EPIC-3/user-auth-flow`
+- Command: `git checkout -b feature/EPIC-N/short-slug`
+
+**Step 2 — Commit** (after implementation, before QA gate):
+
+- Format: `feat: <description>` for new features, `fix: <description>` for bug fixes.
+- Subject line must be ≤ 72 characters and focus on what changes at the user/system level.
+- Stage and commit all story-related files; one commit per logical unit of work.
+
+**Step 3 — Create PR** (only after QA gate PASSES):
+
+- Push branch: `git push -u origin feature/EPIC-N/short-slug`
+- Create PR with `gh pr create`:
+  - **Title**: mirrors the commit message (e.g., `feat: user auth flow`)
+  - **Body**: bullet summary of all ACs implemented, test coverage (unit/integration/E2E counts), and any known limitations or follow-up items.
+
+Example PR body structure:
+```
+## Summary
+- <bullet per major thing implemented>
+
+## Acceptance Criteria
+- AC-1: <description> ✓
+- AC-2: <description> ✓
+
+## Test Coverage
+- Unit: N tests | Integration: N tests | E2E: N tests — all passing
+
+## Notes
+<optional: limitations, follow-ups, migration steps>
+```
