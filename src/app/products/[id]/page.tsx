@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { appRouter } from "@/server/root";
 import { formatCents } from "@/lib/money";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -10,7 +11,7 @@ interface Props {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { id } = await params;
-  const caller = appRouter.createCaller({ user: null, guestToken: null });
+  const caller = appRouter.createCaller({ user: null, guestToken: null, resHeaders: new Headers() });
   const product = await caller.product.byId({ id });
 
   if (!product) {
@@ -53,6 +54,7 @@ export default async function ProductDetailPage({ params }: Props) {
           ) : (
             <p className="text-sm text-destructive font-medium">Out of stock</p>
           )}
+          <AddToCartButton productId={product.id} inStock={product.stock > 0} />
         </div>
       </div>
     </main>

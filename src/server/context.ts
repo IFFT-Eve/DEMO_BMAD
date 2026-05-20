@@ -4,6 +4,7 @@ import { db } from "./db";
 export type Context = {
   user: User | null;
   guestToken: string | null;
+  resHeaders: Headers;
 };
 
 function parseCookieValue(cookieHeader: string, key: string): string | null {
@@ -15,15 +16,17 @@ function parseCookieValue(cookieHeader: string, key: string): string | null {
 
 export async function createContext({
   req,
+  resHeaders,
 }: {
   req: Request;
+  resHeaders: Headers;
 }): Promise<Context> {
   const cookieHeader = req.headers.get("cookie") ?? "";
   const sessionToken = parseCookieValue(cookieHeader, "session_token");
   const guestToken = parseCookieValue(cookieHeader, "guest_cart_token");
 
   if (!sessionToken) {
-    return { user: null, guestToken };
+    return { user: null, guestToken, resHeaders };
   }
 
   const session = await db.session.findFirst({
@@ -31,5 +34,5 @@ export async function createContext({
     include: { user: true },
   });
 
-  return { user: session?.user ?? null, guestToken };
+  return { user: session?.user ?? null, guestToken, resHeaders };
 }
